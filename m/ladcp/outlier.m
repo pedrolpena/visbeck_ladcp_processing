@@ -52,11 +52,11 @@ lo = length(find(isnan(dummy)));
 for n=1:length(p.outlier)
   % calculate anomaly fields
   rwm = nmedian(rw);
-  rw = rw - ones(size(rw,1),1)*rwm;
-  ru = ru - ones(size(ru,1),1)*nmedian(ru);
-  rv = rv - ones(size(rv,1),1)*nmedian(rv);
+  rw = bsxfun(@minus, rw, rwm);
+  ru = bsxfun(@minus, ru, nmedian(ru));
+  rv = bsxfun(@minus, rv, nmedian(rv));
   if isfield(d,'ts')
-    rt = rt - ones(size(rt,1),1)*nmedian(rt);
+    rt = bsxfun(@minus, rt, nmedian(rt));
   end
   if ibvel, 
     bvel(:,3) = bvel(:,3)-rwm'; 
@@ -130,9 +130,9 @@ if values.up==1
 
   for n=1:length(p.outlier)
     % calculate anomaly fields
-    rw = rw - ones(size(rw,1),1)*nmedian(rw);
-    ru = ru - ones(size(ru,1),1)*nmedian(ru);
-    rv = rv - ones(size(rv,1),1)*nmedian(rv);
+    rw = bsxfun(@minus, rw, nmedian(rw));
+    ru = bsxfun(@minus, ru, nmedian(ru));
+    rv = bsxfun(@minus, rv, nmedian(rv));
     for m=1:sn
       ind = (m-1)*nblock+[1:nblock];
       ii = find( ind<=si(2) );

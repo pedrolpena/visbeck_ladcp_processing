@@ -120,16 +120,15 @@ if prod(size(s))==1
         
         end
         
+        warnState = warning('off', 'all');
         for n=1:length(s.children)
-            warning off		% stop not very useful warnings
             if is_octave < 1
                 struct2handle(s.children(n),gcf);
             else
                  struct2hdl(s.children(n),gcf);
             end
-            
-            warning on
         end
+        warning(warnState);
         ch = get(gcf,'children');	% handle disappearing streamer
         for n=1:length(ch)
             if strcmp(get(ch(n),'tag'),'Streamer')

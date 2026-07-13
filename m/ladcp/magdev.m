@@ -30,8 +30,7 @@ function  [dev,d,h,i,f,x,y,z]=magdev(flat,flon,elevkm,year,files);
 % read the coefficients
 %
 fname = [files.cfg_dir,filesep,'igrfcoeffs'];
-warning off			% avoid non-sensical warning in >=R14
-
+warnState = warning('off', 'all');
 if is_octave < 1
     fname =[fname,'.xls']
     gh = xlsread(fname);
@@ -39,8 +38,7 @@ else
     fname =[fname,'.csv']
     gh = dlmread(fname,',');
 end
-
-warning on
+warning(warnState);
 
 %
 % determine the maximum order of polynomials
@@ -57,7 +55,7 @@ end
 %
 % interpolate the coefficients in time
 %
-warning off	% another workaround for annoying >=R14 warnings
+warnState2 = warning('off', 'all');
 if year <= gh(1,end-1)
   gh2 = interp1( gh(1,3:end-1),gh(2:end,3:end-1)',year)';
 else
@@ -68,7 +66,7 @@ else
   ghc(good) = dummy(good);
   gh2 = gh2+ghc*(year-gh(1,end-1));
 end
-warning on
+warning(warnState2);
 
 
 if nargin<3

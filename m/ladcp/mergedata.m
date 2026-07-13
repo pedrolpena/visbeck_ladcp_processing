@@ -238,10 +238,10 @@ if ~isempty(data.ctdtime_data)
     ctdtime_time = data.ctdtime_time;
     ctdtime_time(1) = 0;
     ctdtime_time(end) = 1e32;
-    warning off
+    warnState = warning('off', 'all');
     data_int = interp1(ctdtime_time,data.ctdtime_data,data.time_jul','nearest');
     data.wctd = interp1(ctdtime_time,wctd,data.time_jul','nearest')';
-    warning on
+    warning(warnState);
     lat = values.lat*ones(length(data_int(:,1)),1);
     data.ctd_z = -sw_dpth(data_int(:,1),lat)';
     disp(['    CTD max depth : ',int2str(-min(data.ctd_z))])
@@ -278,11 +278,11 @@ if ~isempty(data.ctdtime_data)
     %
     % reinterpolate w from the CTD onto the LADCP timing
     %
-    warning off
+    warnState2 = warning('off', 'all');
     data_int = interp1(data.ctdtime_time-lagdt,data.ctdtime_data,...
       data.time_jul','linear');
     data.wctd = interp1(data.ctdtime_time-lagdt,wctd,data.time_jul','nearest')';
-    warning on
+    warning(warnState2);
     data.z = -sw_dpth(data_int(:,1),lat)';
     data.ctdtime_data = data_int;
     data.ctdtime_time = data.time_jul;

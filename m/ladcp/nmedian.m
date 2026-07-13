@@ -14,7 +14,7 @@ end
 if isempty(x), y = []; return, end
 
 
-  siz = [size(x) ones(1,dim-ndims(x))];
+  siz = [size(x) ones(1,max(0,dim-ndims(x)))];
   n = size(x,dim);
 
 % Permute and reshape so that DIM becomes the row dimension of a 2-D array
@@ -24,16 +24,16 @@ if isempty(x), y = []; return, end
 % Sort along first dimension
   x = sort(x,1);
 
-  n = sum(~isnan(x));
-  y = zeros(1,size(x,2));
-  for j = 1:size(x,2)
-     if n(j)==0
-        y(j) = NaN;
-     elseif rem(n(j),2) % Odd number of elements along DIM
-        y(j) = x((n(j)+1)/2,j);
-     else % Even number of elements along DIM
-        y(j) = (x(n(j)/2,j) + x((n(j)/2)+1,j))/2;
-     end
+  n    = sum(~isnan(x));
+  y    = NaN(1, size(x,2));
+  nrows = size(x, 1);
+  has  = n > 0;
+  if any(has)
+    cols = find(has);
+    nc   = n(cols);
+    lo   = (cols - 1) * nrows + floor((nc + 1) / 2);
+    hi   = (cols - 1) * nrows + floor((nc + 2) / 2);
+    y(cols) = (x(lo) + x(hi)) * 0.5;
   end
   
 % Permute and reshape back

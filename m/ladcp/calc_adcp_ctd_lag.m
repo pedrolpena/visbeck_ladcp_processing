@@ -54,10 +54,10 @@ for n=1:length(ismed)
   isect = isect(iok);
  
   % interpolate a2 onto a1's times
-  warning off
+  warnState = warning('off', 'all');
   good = find(~isnan(a2(:,2)));
   a22 = interp1(a2(good,1),a2(good,2),a1(isect,1),'nearest');
-  warning on
+  warning(warnState);
   a12=a1(isect,2);
   [lagv(n),i1,i2,cov(n)] = bestlag2(a12,a22,nlag);
 

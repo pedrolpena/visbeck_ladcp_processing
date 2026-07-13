@@ -19,10 +19,12 @@ if strcmpi(ext,'jpg') || strcmpi(ext,'png')
 end
 
 if ~exist(fName,'file') || ~isempty(strfind(fName,'16'))
+    warnState = warning('off', 'all');
     eval(['print -dpng -r300 ',tmpFName]);
     if strcmpi(ext,'png')
         copyfile(tmpFName,plotsFName);
     else
         eval(['print -d',print_formats,' ',plotsFName]);
     end
+    warning(warnState);
 end

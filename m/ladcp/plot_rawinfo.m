@@ -76,7 +76,7 @@ if length(iz)>1
   n3bd = length(i3bd)/length(ind)*100;
 end
 
-subplot(9,2,[3,4,5,6]);
+subplot(9,2,[1,2,3,4,5,6]);
 
 
 %

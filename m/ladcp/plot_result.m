@@ -14,6 +14,15 @@ function plot_result(dr,d,p,ps,values,files)
 % display instrument serial number        GK, 13.07.2012  0.5-->0.6
 % add check for very very short profiles  GK, 13.07.2013  0.6-->0.7
 
+% Octave/gnuplot cannot parse literal newlines inside gnuplot string
+% commands — the newline terminates the quoted string, leaving the rest
+% of the label as an invalid command.  Use a space separator instead.
+if is_octave && graphics_toolkit == 'gnuplot'
+  nl = ' ';
+else
+  nl = char(10);
+end
+
 if isfield(dr,'range_do');
   zpmax = values.maxdepth + nmax([0;dr.range_do]);
 else
@@ -287,7 +296,7 @@ if isnan(ax(1))
   ax(1) = axi(1);
 end
 axis(ax)
-title(['target',char(10),'strength [dB]'],'color','b');
+title(['target',nl,'strength [dB]'],'color','b');
 set(gca,'fontsize',10);
 
 
@@ -345,7 +354,7 @@ if isfield(dr,'ensemble_vel_err')==1;
   plot(dr.ensemble_vel_err,-dr.z/1000,'-b');
   ax(2) = max([2.5*nmedian(ue),2.5*nmedian(dr.ensemble_vel_err)]);
   axis(ax);
-  title(['\color{blue}single ping',char(10),'\color{black}vel error [m/s]']);
+  title(['single ping',nl,'vel error [m/s]']);
   ylabel('depth [km]');
   set (gca,'YAxisLocation','right');
 
@@ -379,7 +388,7 @@ if isfield(dr,'xship')
   plot(dr.xship,dr.yship,'-g',dr.xship(ii),dr.yship(ii),'k.','markersize',10)
   plot([xctd(ii);dr.xship(ii)],[yctd(ii); dr.yship(ii)],'-y','linewidth',0.5)
   %xlabel(['CTD-position (blue)',char(10),'ship (green) east-west [m]']);
-   title(['CTD-position (blue)',char(10),'ship (green) east-west [m]']);
+   title(['CTD-position (blue)',nl,'ship (green) east-west [m]']);
 else
   %xlabel('CTD-position east-west [m]');
   title('CTD-position east-west [m]');
@@ -399,7 +408,7 @@ grid
 set(gca,'fontsize',10)
 
 
-[ax1,h1]=suplabel(p.software,'x');
+[ax1,h1]=suplabel(strrep(p.software, char(10), nl),'x');
  set(h1,'FontSize',9);
 axis off
 

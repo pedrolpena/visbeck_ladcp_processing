@@ -32,6 +32,9 @@ function [] = process_cast(stnS,ctd_lagS,extraarg)
 % strings and numbers to be passed
 
 %apath;
+warning('off', 'all');
+addpath(genpath([pwd(),filesep,'m']));
+addpath([pwd(),filesep,'cfg']);
 tic;					% start timer
 global fig16h; % handle to  figure 16
 global fig8h;  % handle to figure 8
@@ -82,11 +85,11 @@ fidW=fopen(fileToWrite,'w');
 
 tline = fgetl(fid);
 while ischar(tline)
-  
+
     if ~ischar(tline)
         break;
     end
-    
+
     tline=strrep(tline,'%','percent');
     if ~isempty(tline)
        fprintf(fidW,[tline,'\r\n']);
@@ -193,28 +196,28 @@ navDat=[];
 
 if make_nav == 1
     navDat=cnv2nav(ctdtimeR);
-    
+
     if isempty(navDat)
         disp(['CAN''T CREATE NAV FILE FROM ',ctdtimeR]);
         disp(['ATTEMPTING TO CREATE NAV FILE FROM ',ctdprofR]);
         navDat=cnv2nav(ctdprofR);
     end
-    
-    
+
+
     if isempty(navDat)
-        
+
         disp('COULD NOT CREATE NAVIGATIONAL FILE FROM A CNV FILE. IN ORDER TO CREATE ONE,');
         disp('THE CNV FILE MUST CONTAIN the timeS: , Lattitude: AND Longitude: COLUMNS');
-        
-    end
-    
 
-    
+    end
+
+
+
 end
 %generate vis file from a gprmc file
 if make_nav == 2
     navDat=rmc2nav(rmcFile,0,0);
-    
+
     if isempty(navDat)
         disp([char(10),'CAN''T CREATE VIS FILE FROM ',rmcFile]);
         disp('CREATE A FILE WITH GPRMC STRINGS AND PLACE IT IN THE');
@@ -225,7 +228,7 @@ end
 %generate a vis file from a posmv file
 if make_nav == 3
     navDat=posmv2nav(pos_mvFile,0,0);
-    
+
     if isempty(navDat)
         disp([char(10),'CAN''T CREATE VIS FILE FROM ',pos_mvFile]);
         disp('CREATE A FILE WITH POSMV STRINGS AND PLACE IT IN THE');
@@ -488,13 +491,13 @@ img_save('11',p.print_formats,files);
 disp(' ')
 disp('SAVING RESULTS')
 if length(files.res)>1
-    
+
     %
     % save results to ASCII, MATLAB and NETCDF files
     %
     saveres(data,dr,p,ps,files,values);
     %  da = savearch(values,dr,data,p,ps,f);
-    
+
     %
     % save plots
     %
@@ -504,7 +507,7 @@ if length(files.res)>1
     else
         imac = ismac;
     end
-    
+
 %    if noplots==0
      %if isempty(findstr(p.print_formats,'none')) %Pedo Pena
      if 0 %Pedo Pena
@@ -518,13 +521,13 @@ if length(files.res)>1
         else
             figExt ='ofig';
         end
-        
+
         for n = 1:length(p.saveplot)
             j = p.saveplot(n);
             if exist(['tmp',filesep,int2str(j),'.',figExt],'file')
                 figload(['tmp',filesep,int2str(j),'.',figExt],2);
                 %openfig(['tmp',filesep,int2str(j),'.fig']); %Pedro Pena 8.18.16
-                
+
                 %% lines added by RHS 03DEC2013
                 if j>2
                     orient landscape;
@@ -535,7 +538,7 @@ if length(files.res)>1
             if imac
                 if findstr(p.print_formats,'ps')
                     eval(['print -depsc ',files.plots,'_' int2str(j) '.eps ']);
-                    
+
                 end
             else
                 if findstr(p.print_formats,'ps')
@@ -555,31 +558,31 @@ if length(files.res)>1
                 else
                     eval(['print -djpg ',files.plots,'_' int2str(j) '.jpg ']);
                 end
-                
+
             end
             warning on;
             %close gcf;
         end
     end
-    
+
     %% lines added by RHS 25NOV2013
     if findstr(p.print_formats,'ps')
         %pdf_string = ['! ps2pdf ',files.plots,'_report.ps ',files.plots,'_report.pdf'];
         %eval(pdf_string);
         %pdf_string = ['ps2pdf ',files.plots,'_report.ps ',files.plots,'_report.pdf']; % Pedro Pena 8.18.16
         %system(pdf_string);
-        
+
     end
-    
+
     % save a protocol
     saveprot
-    
+
     % save full information into mat file
     if p.savemat==1
         disp(['    Saving full information to ',files.res,'_full.mat']);
         save6([files.res,'_full.mat']);
     end
-    
+
 end
 
 % switch to final result figure
